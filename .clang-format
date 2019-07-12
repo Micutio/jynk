@@ -1,0 +1,21 @@
+# Use defaults from Google
+BasedOnStyle: Google
+AccessModifierOffset: -4
+AlwaysBreakBeforeMultilineStrings: false
+BinPackArguments: false
+BinPackParameters: false
+BreakAfterJavaFieldAnnotations: true
+ColumnLimit: 120
+# Force pointers to the type
+DerivePointerAlignment: false
+IncludeBlocks: Regroup
+IndentWidth: 4
+PointerAlignment: Left
+SpaceBeforeCtorInitializerColon: false
+SpaceBeforeInheritanceColon: false
+SpaceBeforeRangeBasedForLoopColon: false
+SpacesBeforeTrailingComments: 1
+SpacesInContainerLiterals: true
+Standard: Auto
+TabWidth: 4
+UseTab: Never
