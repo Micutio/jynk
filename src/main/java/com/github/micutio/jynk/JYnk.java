@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * Java interpreter for the programming language `ynk`.
+ * Java interpreter for the programming language `Ynk`.
  * Uses UNIX sysexists.h exit codes.
  * @author michael
  */
