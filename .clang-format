@@ -2,6 +2,7 @@
 BasedOnStyle: Google
 AccessModifierOffset: -4
 AlwaysBreakBeforeMultilineStrings: false
+AllowShortCaseLabelsOnASingleLine: true
 BinPackArguments: false
 BinPackParameters: false
 BreakAfterJavaFieldAnnotations: true
