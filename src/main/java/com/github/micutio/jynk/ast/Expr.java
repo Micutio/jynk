@@ -4,7 +4,7 @@ import com.github.micutio.jynk.lexing.Token;
 
 import java.util.List;
 
-abstract class Expr {
+public abstract class Expr {
     interface Visitor<R> {
         R visitBinaryExpr(Binary expr);
         R visitGroupingExpr(Grouping expr);
@@ -17,11 +17,11 @@ abstract class Expr {
         final Token operator;
         final Expr right;
 
-        Binary(Expr left, Token operator, Expr right) {
+        public Binary(Expr left, Token operator, Expr right) {
             this.left = left;
             this.operator = operator;
             this.right = right;
-         }
+        }
 
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitBinaryExpr(this);
@@ -31,9 +31,9 @@ abstract class Expr {
     static class Grouping extends Expr {
         final Expr expression;
 
-        Grouping(Expr expression) {
+        public Grouping(Expr expression) {
             this.expression = expression;
-         }
+        }
 
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitGroupingExpr(this);
@@ -43,9 +43,9 @@ abstract class Expr {
     static class Literal extends Expr {
         final Object value;
 
-        Literal(Object value) {
+        public Literal(Object value) {
             this.value = value;
-         }
+        }
 
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitLiteralExpr(this);
@@ -56,15 +56,15 @@ abstract class Expr {
         final Token operator;
         final Expr right;
 
-        Unary(Token operator, Expr right) {
+        public Unary(Token operator, Expr right) {
             this.operator = operator;
             this.right = right;
-         }
+        }
 
         <R> R accept(Visitor<R> visitor) {
             return visitor.visitUnaryExpr(this);
         }
     }
 
-    abstract <R> R accept(Visitor<R> visitor);
+    public abstract <R> R accept(Visitor<R> visitor);
 }

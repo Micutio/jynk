@@ -1,7 +1,11 @@
 package com.github.micutio.jynk;
 
+import com.github.micutio.jynk.ast.AstPrinter;
+import com.github.micutio.jynk.ast.Expr;
 import com.github.micutio.jynk.lexing.Scanner;
 import com.github.micutio.jynk.lexing.Token;
+import com.github.micutio.jynk.lexing.TokenType;
+import com.github.micutio.jynk.parsing.Parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,15 +61,25 @@ public class JYnk {
     private static void run(String sourceCode) {
         Scanner scanner = new Scanner(sourceCode);
         List<Token> tokens = scanner.scanTokens();
+        Parser parser = new Parser(tokens);
+        Expr expression = parser.parse();
 
-        // for now, just print the tokens
-        for (Token token: tokens) {
-            System.out.println(token);
-        }
+        // stop if there was a syntax error
+        if (hadError) return;
+
+        System.out.println(new AstPrinter().print(expression));
     }
 
     public static void error(int line, String message) {
         report(line, "", message);
+    }
+
+    public static void error(Token token, String message) {
+        if (token.type == TokenType.EOF) {
+            report(token.line, " at end", message);
+        } else {
+            report(token.line, " at '" + token.lexeme + "'", message);
+        }
     }
 
     private static void report(int line, String where, String message) {

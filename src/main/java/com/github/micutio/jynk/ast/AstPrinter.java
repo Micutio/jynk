@@ -8,7 +8,7 @@ import com.github.micutio.jynk.lexing.TokenType;
  */
 public class AstPrinter implements Expr.Visitor<String> {
 
-    String print(Expr expr) {
+    public String print(Expr expr) {
         return expr.accept(this);
     }
 

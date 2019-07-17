@@ -34,7 +34,7 @@ public class GenerateAst {
         writer.println();
         writer.println("import java.util.List;");
         writer.println();
-        writer.println("abstract class " + baseName + " {");
+        writer.println("public abstract class " + baseName + " {");
 
         defineVisitor(writer, baseName, types);
 
@@ -47,7 +47,7 @@ public class GenerateAst {
 
         // the base `accept()` method
         writer.println();
-        writer.println("    abstract <R> R accept(Visitor<R> visitor);");
+        writer.println("    public abstract <R> R accept(Visitor<R> visitor);");
 
         writer.println("}");
         writer.close();
@@ -77,13 +77,13 @@ public class GenerateAst {
         writer.println();
 
         // constructor
-        writer.println("        " + className + "(" + fieldList + ") {");
+        writer.println("        public " + className + "(" + fieldList + ") {");
         // store parameters in fields
         for (String field: fields) {
             String name = field.split(" ")[1];
             writer.println("            this." + name + " = " + name + ";");
         }
-        writer.println("         }");
+        writer.println("        }");
 
         // visitor pattern
         writer.println();
