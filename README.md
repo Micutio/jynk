@@ -1,4 +1,4 @@
-# jynk
+# jynk - Java Interpreter for ynk
 
 ## About ynk itself
 
