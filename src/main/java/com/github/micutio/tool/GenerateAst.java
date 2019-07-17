@@ -67,7 +67,7 @@ public class GenerateAst {
 
     private static void defineType(PrintWriter writer, String baseName, String className, String fieldList) {
         writer.println();
-        writer.println("    static class " + className + " extends " + baseName + " {");
+        writer.println("    public static class " + className + " extends " + baseName + " {");
 
         // fields
         String[] fields = fieldList.split(", ");
@@ -87,7 +87,7 @@ public class GenerateAst {
 
         // visitor pattern
         writer.println();
-        writer.println("        <R> R accept(Visitor<R> visitor) {");
+        writer.println("        public <R> R accept(Visitor<R> visitor) {");
         writer.println("            return visitor.visit" + className + baseName + "(this);");
         writer.println("        }");
 
