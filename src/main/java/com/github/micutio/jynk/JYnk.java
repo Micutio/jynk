@@ -2,6 +2,7 @@ package com.github.micutio.jynk;
 
 import com.github.micutio.jynk.ast.AstPrinter;
 import com.github.micutio.jynk.ast.Expr;
+import com.github.micutio.jynk.interpreter.Interpreter;
 import com.github.micutio.jynk.lexing.Scanner;
 import com.github.micutio.jynk.lexing.Token;
 import com.github.micutio.jynk.lexing.TokenType;
@@ -22,7 +23,9 @@ import java.util.List;
  */
 public class JYnk {
 
-    static boolean hadError;
+    private static final Interpreter interpreter = new Interpreter();
+    private static boolean hadError;
+    private static boolean hadRuntimeError;
 
     public static void main(String[] args) throws IOException {
         if (args.length > 1) {
@@ -43,6 +46,7 @@ public class JYnk {
 
         // Indicate an error n the exit code.
         if (hadError) System.exit(65);
+        if (hadRuntimeError) System.exit(70);
     }
 
     private static void runPrompt() throws IOException {
@@ -55,6 +59,7 @@ public class JYnk {
 
             // clear error flag from any side effects
             hadError = false;
+            hadRuntimeError = false;
         }
     }
 
@@ -67,7 +72,8 @@ public class JYnk {
         // stop if there was a syntax error
         if (hadError) return;
 
-        System.out.println(new AstPrinter().print(expression));
+        // System.out.println(new AstPrinter().print(expression));
+        interpreter.interpret(expression);
     }
 
     public static void error(int line, String message) {
@@ -80,6 +86,11 @@ public class JYnk {
         } else {
             report(token.line, " at '" + token.lexeme + "'", message);
         }
+    }
+
+    public static void runtimeError(RuntimeError error) {
+        System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
+        hadRuntimeError = true;
     }
 
     private static void report(int line, String where, String message) {
