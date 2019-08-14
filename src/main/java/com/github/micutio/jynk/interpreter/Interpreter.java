@@ -3,17 +3,21 @@ package com.github.micutio.jynk.interpreter;
 import com.github.micutio.jynk.JYnk;
 import com.github.micutio.jynk.RuntimeError;
 import com.github.micutio.jynk.ast.Expr;
+import com.github.micutio.jynk.ast.Stmt;
 import com.github.micutio.jynk.lexing.Token;
+
+import java.util.List;
 
 /**
  * Post-order traversal. Evaluate all children first, before evaluating the expr/stmt.
  */
-public class Interpreter implements Expr.Visitor<Object> {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
-    public void interpret(Expr expression) {
+    public void interpret(List<Stmt> statements) {
         try {
-            Object value = evaluate(expression);
-            System.out.println(stringify(value));
+            for (Stmt statement: statements) {
+                execute(statement);
+            }
         } catch (RuntimeError err) {
             JYnk.runtimeError(err);
         }
@@ -88,6 +92,23 @@ public class Interpreter implements Expr.Visitor<Object> {
 
     private Object evaluate(Expr expr) {
         return expr.accept(this);
+    }
+
+    private void execute(Stmt stmt) {
+        stmt.accept(this);
+    }
+
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression stmt) {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print stmt) {
+        Object value = evaluate(stmt.expression);
+        System.out.println(stringify(value));
+        return null;
     }
 
     private boolean isEqual(Object a, Object b) {

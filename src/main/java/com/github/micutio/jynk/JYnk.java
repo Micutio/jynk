@@ -2,6 +2,7 @@ package com.github.micutio.jynk;
 
 import com.github.micutio.jynk.ast.AstPrinter;
 import com.github.micutio.jynk.ast.Expr;
+import com.github.micutio.jynk.ast.Stmt;
 import com.github.micutio.jynk.interpreter.Interpreter;
 import com.github.micutio.jynk.lexing.Scanner;
 import com.github.micutio.jynk.lexing.Token;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * Java interpreter for the programming language `Ynk`.
  * Uses UNIX sysexists.h exit codes.
- * @author michael
+ * @author micutio
  */
 public class JYnk {
 
@@ -67,13 +68,13 @@ public class JYnk {
         Scanner scanner = new Scanner(sourceCode);
         List<Token> tokens = scanner.scanTokens();
         Parser parser = new Parser(tokens);
-        Expr expression = parser.parse();
+        List<Stmt> statements = parser.parse();
 
         // stop if there was a syntax error
         if (hadError) return;
 
         // System.out.println(new AstPrinter().print(expression));
-        interpreter.interpret(expression);
+        interpreter.interpret(statements);
     }
 
     public static void error(int line, String message) {
