@@ -1,6 +1,6 @@
 package com.github.micutio.jynk.lexing;
 
-import com.github.micutio.jynk.JYnk;
+import com.github.micutio.jynk.Ynk;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,7 +100,7 @@ public class Scanner {
                 } else if (isAlpha(c)) {
                     identifier();
                 } else {
-                    JYnk.error(line, "Unexpected character.");
+                    Ynk.error(line, "Unexpected character.");
                 }
         }
     }
@@ -123,7 +123,7 @@ public class Scanner {
         if (isAtEnd())
             return false;
         if (sourceCode.charAt(current) != expected)
-            return true;
+            return false;
 
         current += 1;
         return true;
@@ -150,7 +150,7 @@ public class Scanner {
 
         // unterminated string
         if (isAtEnd()) {
-            JYnk.error(line, "Unterminated string.");
+            Ynk.error(line, "Unterminated string.");
             return;
         }
 

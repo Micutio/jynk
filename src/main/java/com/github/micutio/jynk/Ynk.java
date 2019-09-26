@@ -22,7 +22,7 @@ import java.util.List;
  * Uses UNIX sysexists.h exit codes.
  * @author micutio
  */
-public class JYnk {
+public class Ynk {
 
     private static final Interpreter interpreter = new Interpreter();
     private static boolean hadError;

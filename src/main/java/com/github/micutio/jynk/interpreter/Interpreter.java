@@ -1,10 +1,11 @@
 package com.github.micutio.jynk.interpreter;
 
-import com.github.micutio.jynk.JYnk;
+import com.github.micutio.jynk.Ynk;
 import com.github.micutio.jynk.RuntimeError;
 import com.github.micutio.jynk.ast.Expr;
 import com.github.micutio.jynk.ast.Stmt;
 import com.github.micutio.jynk.lexing.Token;
+import com.github.micutio.jynk.parsing.Environment;
 
 import java.util.List;
 
@@ -13,13 +14,15 @@ import java.util.List;
  */
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
+    private Environment environment = new Environment();
+
     public void interpret(List<Stmt> statements) {
         try {
             for (Stmt statement: statements) {
                 execute(statement);
             }
         } catch (RuntimeError err) {
-            JYnk.runtimeError(err);
+            Ynk.runtimeError(err);
         }
     }
 
@@ -90,6 +93,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return null;
     }
 
+    @Override
+    public Object visitVariableExpr(Expr.Variable expr) {
+        return environment.get(expr.name);
+    }
+
     private Object evaluate(Expr expr) {
         return expr.accept(this);
     }
@@ -108,6 +116,17 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     public Void visitPrintStmt(Stmt.Print stmt) {
         Object value = evaluate(stmt.expression);
         System.out.println(stringify(value));
+        return null;
+    }
+
+    @Override
+    public Void visitVarStmt(Stmt.Var stmt) {
+        Object value = null;
+        if (stmt.initializer != null) {
+            value = evaluate(stmt.initializer);
+        }
+
+        environment.define(stmt.name.lexeme, value);
         return null;
     }
 
