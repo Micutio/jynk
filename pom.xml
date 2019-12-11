@@ -68,13 +68,13 @@
                                 <!--Create all necessary manifest entries-->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>com.tumcreate.rp5.citymos_network_editor.CityMoSNetworkEditorApp</Main-Class>
+                                        <Main-Class>com.github.micutio.jynk.Ynk</Main-Class>
                                         <Specification-Title>${project.artifactId}</Specification-Title>
                                         <Specification-Version>${project.version}</Specification-Version>
-                                        <Specification-Vendor>TUMCREATE</Specification-Vendor>
+                                        <Specification-Vendor>micutio</Specification-Vendor>
                                         <Implementation-Title>${project.artifactId}</Implementation-Title>
                                         <Implementation-Version>${project.version}</Implementation-Version>
-                                        <Implementation-Vendor>TUMCREATE</Implementation-Vendor>
+                                        <Implementation-Vendor>micutio</Implementation-Vendor>
                                     </manifestEntries>
                                 </transformer>
                             </transformers>
@@ -83,6 +83,7 @@
                 </executions>
             </plugin>
             <plugin>
+<!--                Required for javapackager-->
                 <groupId>com.zenjava</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>8.8.3</version>
