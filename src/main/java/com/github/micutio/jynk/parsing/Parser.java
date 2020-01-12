@@ -1,18 +1,16 @@
 package com.github.micutio.jynk.parsing;
 
+import static com.github.micutio.jynk.lexing.TokenType.*;
+
 import com.github.micutio.jynk.Ynk;
 import com.github.micutio.jynk.ast.Expr;
 import com.github.micutio.jynk.ast.Stmt;
 import com.github.micutio.jynk.lexing.Token;
 import com.github.micutio.jynk.lexing.TokenType;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.micutio.jynk.lexing.TokenType.*;
-
 public class Parser {
-
     private static class ParseError extends RuntimeException {}
 
     private final List<Token> tokens;
@@ -37,7 +35,8 @@ public class Parser {
 
     private Stmt declaration() {
         try {
-            if (match(VAR)) return varDeclaration();
+            if (match(VAR))
+                return varDeclaration();
 
             return statement();
         } catch (ParseError error) {
@@ -47,7 +46,8 @@ public class Parser {
     }
 
     private Stmt statement() {
-        if (match(PRINT)) return printStatement();
+        if (match(PRINT))
+            return printStatement();
 
         return expressionStatement();
     }
@@ -66,7 +66,7 @@ public class Parser {
             initializer = expression();
         }
 
-        consume (SEMICOLON, "Expect ';' after variable declaration.");
+        consume(SEMICOLON, "Expect ';' after variable declaration.");
         return new Stmt.Var(name, initializer);
     }
 
@@ -88,7 +88,7 @@ public class Parser {
                 return new Expr.Assign(name, value);
             }
 
-            error(equals, "Invalid assignment target");
+            throw error(equals, "Invalid assignment target");
         }
 
         return expr;
@@ -153,9 +153,12 @@ public class Parser {
     }
 
     private Expr primary() {
-        if (match(FALSE)) return new Expr.Literal(false);
-        if (match(TRUE)) return new Expr.Literal(true);
-        if (match(NIL)) return new Expr.Literal(null);
+        if (match(FALSE))
+            return new Expr.Literal(false);
+        if (match(TRUE))
+            return new Expr.Literal(true);
+        if (match(NIL))
+            return new Expr.Literal(null);
 
         if (match(NUMBER, STRING)) {
             return new Expr.Literal(previous().literal);
@@ -186,12 +189,14 @@ public class Parser {
     }
 
     private boolean check(TokenType type) {
-        if (isAtEnd()) return false;
+        if (isAtEnd())
+            return false;
         return peek().type == type;
     }
 
     private Token advance() {
-        if (!isAtEnd()) current += 1;
+        if (!isAtEnd())
+            current += 1;
         return previous();
     }
 
@@ -208,7 +213,8 @@ public class Parser {
     }
 
     private Token consume(TokenType type, String message) {
-        if (check(type)) return advance();
+        if (check(type))
+            return advance();
 
         throw error(peek(), message);
     }
@@ -217,7 +223,8 @@ public class Parser {
         advance();
 
         while (isAtEnd()) {
-            if (previous().type == SEMICOLON) return;
+            if (previous().type == SEMICOLON)
+                return;
         }
 
         switch (peek().type) {
@@ -228,8 +235,7 @@ public class Parser {
             case IF:
             case WHILE:
             case PRINT:
-            case RETURN:
-                return;
+            case RETURN: return;
         }
 
         advance();
@@ -239,5 +245,4 @@ public class Parser {
         Ynk.error(token, message);
         return new ParseError();
     }
-
 }

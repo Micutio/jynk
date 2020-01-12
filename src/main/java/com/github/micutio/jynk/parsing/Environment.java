@@ -2,12 +2,10 @@ package com.github.micutio.jynk.parsing;
 
 import com.github.micutio.jynk.RuntimeError;
 import com.github.micutio.jynk.lexing.Token;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class Environment {
-
     final Environment enclosing;
 
     private final Map<String, Object> values = new HashMap<>();
@@ -29,7 +27,8 @@ public class Environment {
             return values.get(name.lexeme);
         }
 
-        if (enclosing != null) return enclosing.get(name);
+        if (enclosing != null)
+            return enclosing.get(name);
 
         throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
     }

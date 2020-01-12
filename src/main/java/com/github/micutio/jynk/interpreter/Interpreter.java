@@ -1,19 +1,17 @@
 package com.github.micutio.jynk.interpreter;
 
-import com.github.micutio.jynk.Ynk;
 import com.github.micutio.jynk.RuntimeError;
+import com.github.micutio.jynk.Ynk;
 import com.github.micutio.jynk.ast.Expr;
 import com.github.micutio.jynk.ast.Stmt;
 import com.github.micutio.jynk.lexing.Token;
 import com.github.micutio.jynk.parsing.Environment;
-
 import java.util.List;
 
 /**
  * Post-order traversal. Evaluate all children first, before evaluating the expr/stmt.
  */
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
-
     private Environment environment = new Environment();
 
     public void interpret(List<Stmt> statements) {
@@ -27,7 +25,8 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     }
 
     private String stringify(Object object) {
-        if (object == null) return "nil";
+        if (object == null)
+            return "nil";
 
         // Hack. Work around Java adding .0 to integer-valued doubles.
         if (object instanceof Double) {

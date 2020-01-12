@@ -8,7 +8,6 @@ import com.github.micutio.jynk.lexing.Scanner;
 import com.github.micutio.jynk.lexing.Token;
 import com.github.micutio.jynk.lexing.TokenType;
 import com.github.micutio.jynk.parsing.Parser;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -23,7 +22,6 @@ import java.util.List;
  * @author micutio
  */
 public class Ynk {
-
     private static final Interpreter interpreter = new Interpreter();
     private static boolean hadError;
     private static boolean hadRuntimeError;
@@ -34,10 +32,10 @@ public class Ynk {
             System.exit(64);
         } else if (args.length == 1) {
             System.out.println("parsing source file " + args[0]);
-             runFile(args[0]);
+            runFile(args[0]);
         } else {
             System.out.println("launching ynk prompt...");
-             runPrompt();
+            runPrompt();
         }
     }
 
@@ -46,8 +44,10 @@ public class Ynk {
         run(new String(bytes, Charset.defaultCharset()));
 
         // Indicate an error n the exit code.
-        if (hadError) System.exit(65);
-        if (hadRuntimeError) System.exit(70);
+        if (hadError)
+            System.exit(65);
+        if (hadRuntimeError)
+            System.exit(70);
     }
 
     private static void runPrompt() throws IOException {
@@ -71,7 +71,8 @@ public class Ynk {
         List<Stmt> statements = parser.parse();
 
         // stop if there was a syntax error
-        if (hadError) return;
+        if (hadError)
+            return;
 
         // System.out.println(new AstPrinter().print(expression));
         interpreter.interpret(statements);
@@ -98,5 +99,4 @@ public class Ynk {
         System.err.println("[line " + line + "] Error" + where + ": " + message);
         hadError = true;
     }
-
 }

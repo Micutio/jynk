@@ -1,13 +1,12 @@
 package com.github.micutio.jynk.lexing;
 
-import com.github.micutio.jynk.Ynk;
+import static com.github.micutio.jynk.lexing.TokenType.*;
 
+import com.github.micutio.jynk.Ynk;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.github.micutio.jynk.lexing.TokenType.*;
 
 public class Scanner {
     private final String sourceCode;
@@ -205,7 +204,8 @@ public class Scanner {
         String text = sourceCode.substring(start, current);
 
         TokenType type = keywords.get(text);
-        if (type == null) type = IDENTIFIER;
+        if (type == null)
+            type = IDENTIFIER;
 
         addToken(type);
     }
