@@ -1,6 +1,7 @@
 package com.github.micutio.jynk.ast;
 
 import com.github.micutio.jynk.lexing.Token;
+
 import java.util.List;
 
 public abstract class Stmt {
@@ -10,6 +11,7 @@ public abstract class Stmt {
         R visitIfStmt(If stmt);
         R visitPrintStmt(Print stmt);
         R visitVarStmt(Var stmt);
+        R visitWhileStmt(While stmt);
     }
 
     public static class Block extends Stmt {
@@ -75,6 +77,20 @@ public abstract class Stmt {
 
         public <R> R accept(Visitor<R> visitor) {
             return visitor.visitVarStmt(this);
+        }
+    }
+
+    public static class While extends Stmt {
+        public final Expr condition;
+        public final Stmt body;
+
+        public While(Expr condition, Stmt body) {
+            this.condition = condition;
+            this.body = body;
+        }
+
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitWhileStmt(this);
         }
     }
 

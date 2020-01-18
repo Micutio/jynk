@@ -1,6 +1,7 @@
 package com.github.micutio.jynk.ast;
 
 import com.github.micutio.jynk.lexing.Token;
+
 import java.util.List;
 
 public abstract class Expr {
