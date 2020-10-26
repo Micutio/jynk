@@ -7,13 +7,39 @@ import com.github.micutio.jynk.ast.Stmt;
 import com.github.micutio.jynk.lexing.Token;
 import com.github.micutio.jynk.lexing.TokenType;
 import com.github.micutio.jynk.parsing.Environment;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Post-order traversal. Evaluate all children first, before evaluating the expr/stmt.
  */
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
-    private Environment environment = new Environment();
+    // private Environment environment = new Environment();
+    final Environment globals = new Environment();
+    private Environment environment = globals;
+
+    Interpreter() {
+        // Other possible native functions are:
+        // - reading input from the user
+        // - working with files etc.
+        globals.define("clock", new YnkCallable() {
+            @Override
+            public int arity() {
+                return 0;
+            }
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {
+                return (double)System.currentTimeMillis() / 1000.0;
+            }
+
+            @Override
+            public String toString() {
+                return "<native fn>";
+            }
+        });
+    }
 
     public void interpret(List<Stmt> statements) {
         try {
@@ -68,6 +94,33 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
         // unreachable
         return null;
+    }
+
+    @Override
+    public Object visitCallExpr(Expr.Call expr) {
+        Object callee = evaluate(expr.callee);
+
+        List<Object> arguments = new ArrayList<>();
+        for (Expr argument: expr.arguments) {
+            arguments.add(evaluate(argument));
+        }
+
+        // "This is another one of those subtle semantic choices. Since argument expressions may
+        // have side effects, the order they are evaluated could be user visible. Even so, some
+        // languages like Scheme and C don’t specify an order. This gives compilers freedom to
+        // reorder them for efficiency, but means users may be unpleasantly surprised if arguments
+        // aren’t evaluated in the order they expect."
+
+        if (!(callee instanceof YnkCallable)) {
+            throw new RuntimeError(expr.paren, "CAn only call functions an classes.");
+        }
+
+        YnkCallable function = (YnkCallable) callee;
+        if (arguments.size() != function.arity()) {
+            throw new RuntimeError(expr.paren, "Expected " + function.arity() + " arguments but got " + arguments.size() + ".");
+        }
+
+        return function.call(this, arguments);
     }
 
     @Override

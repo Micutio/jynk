@@ -24,6 +24,34 @@ public class AstPrinter implements Expr.Visitor<String> {
         return builder.toString();
     }
 
+    // Note: AstPrinting other types of syntax trees is not shown in the
+    // book, but this is provided here as a reference for those reading
+    // the full code.
+    private String parenthesize2(String name, Object... parts) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("(").append(name);
+
+        for (Object part : parts) {
+            builder.append(" ");
+
+            if (part instanceof Expr) {
+                builder.append(((Expr)part).accept(this));
+//> Statements and State omit
+            } else if (part instanceof Stmt) {
+                builder.append(((Stmt) part).accept(this));
+//< Statements and State omit
+            } else if (part instanceof Token) {
+                builder.append(((Token) part).lexeme);
+            } else {
+                builder.append(part);
+            }
+        }
+        builder.append(")");
+
+        return builder.toString();
+    }
+
     @Override
     public String visitAssignExpr(Expr.Assign expr) {
         return null;

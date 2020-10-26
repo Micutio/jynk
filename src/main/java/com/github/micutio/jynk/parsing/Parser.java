@@ -97,16 +97,21 @@ public class Parser {
             body = new Stmt.Block(Arrays.asList(body, new Stmt.Expression(increment)));
         }
 
-        if (condition == null) condition = new Expr.Literal(true);
+        if (condition == null)
+            condition = new Expr.Literal(true);
         body = new Stmt.While(condition, body);
 
-        if (initializer != null){
+        if (initializer != null) {
             body = new Stmt.Block(Arrays.asList(initializer, body));
         }
 
         return body;
     }
 
+    /**
+     * TODO: Turn this into a native function!
+     * @return Print statement
+     */
     private Stmt printStatement() {
         Expr value = expression();
         consume(SEMICOLON, "Expect ';' after value.");
@@ -247,7 +252,21 @@ public class Parser {
             return new Expr.Unary(operator, right);
         }
 
-        return primary();
+        return call();
+    }
+
+    private Expr call() {
+        Expr expr = primary();
+
+        while (true) {
+            if (match(LEFT_PAREN)) {
+                expr = finishCall(expr);
+            } else {
+                break;
+            }
+        }
+
+        return expr;
     }
 
     private Expr primary() {
@@ -273,6 +292,23 @@ public class Parser {
         }
 
         throw error(peek(), "Expect expression.");
+    }
+
+    private Expr finishCall(Expr callee) {
+        List<Expr> arguments = new ArrayList<>();
+        if (!check(RIGHT_PAREN)) {
+            do {
+                if (arguments.size() >= 255) {
+                    // instead of throwing, we report the error
+                    // the parser is still in a valid state
+                    error(peek(), "Cannot have more than 255 arguments");
+                }
+                arguments.add(expression());
+            } while (match(COMMA));
+        }
+
+        Token paren = consume(RIGHT_PAREN, "Expect ')' after arguments.");
+        return new Expr.Call(callee, paren, arguments);
     }
 
     private boolean match(TokenType... types) {
